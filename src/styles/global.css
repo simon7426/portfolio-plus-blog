@@ -321,3 +321,20 @@ th {
 .code-block__copy--copied {
   color: var(--text);
 }
+
+/* Mermaid diagrams */
+.mermaid {
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
