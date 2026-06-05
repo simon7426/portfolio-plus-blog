@@ -1,0 +1,117 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { currentPage, totalPages = 1, baseUrl } = Astro.props;
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    {currentPage > 1 ? (
+      <a href={currentPage === 2 ? baseUrl : `${baseUrl}/page/${currentPage - 1}`} class="pagination__link pagination__link--prev">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        Prev
+      </a>
+    ) : (
+      <span class="pagination__link pagination__link--disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        Prev
+      </span>
+    )}
+
+    <span class="pagination__pages">
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        page === currentPage ? (
+          <span class="pagination__page pagination__page--active">{page}</span>
+        ) : (
+          <a href={page === 1 ? baseUrl : `${baseUrl}/page/${page}`} class="pagination__page">{page}</a>
+        )
+      ))}
+    </span>
+
+    {currentPage < totalPages ? (
+      <a href={`${baseUrl}/page/${currentPage + 1}`} class="pagination__link pagination__link--next">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    ) : (
+      <span class="pagination__link pagination__link--disabled">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </span>
+    )}
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.8rem;
+  }
+
+  .pagination__link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: color 0.15s ease;
+  }
+
+  .pagination__link:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .pagination__link--disabled {
+    color: var(--text-muted);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .pagination__pages {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .pagination__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: 3px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .pagination__page:hover {
+    background: var(--bg-secondary);
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .pagination__page--active {
+    background: var(--text);
+    color: var(--bg);
+    font-weight: 600;
+  }
+</style>

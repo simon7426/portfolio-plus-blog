@@ -23,12 +23,6 @@
   const toggle = document.getElementById('theme-toggle');
   const html = document.documentElement;
 
-  function getPreferredTheme() {
-    const stored = localStorage.getItem('theme');
-    if (stored) return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
   function setTheme(theme: string) {
     html.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
@@ -40,7 +34,6 @@
     toggle?.querySelector('.theme-toggle__icon--moon')?.classList.toggle('hidden', isDark);
   }
 
-  setTheme(getPreferredTheme());
   updateIcon();
 
   toggle?.addEventListener('click', () => {
