@@ -338,8 +338,7 @@ The `.unique()` call matters -- without it, SQLAlchemy returns duplicate User ob
 
 `selectinload()` works well for collections (one-to-many). `joinedload()` works better for single related objects (many-to-one).
 
-For more details, see the [SQLAlchemy eager loading documentation](https://docs.sqlalchemy.org/en/20/orm/loading_relationships.html).
-
+For more details, see the [SQLAlchemy Relationship Loading Techniques](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html).
 
 ## Before and After
 
@@ -553,7 +552,6 @@ Deploy with query counting enabled in staging. Collect metrics over a few days. 
 ## Resources
 
 - [SQLAlchemy Event System](https://docs.sqlalchemy.org/en/20/core/events.html)
-- [Eager Loading Relationships](https://docs.sqlalchemy.org/en/20/orm/loading_relationships.html)
-- [selectinload() Documentation](https://docs.sqlalchemy.org/en/20/orm/loading_relationships.html#sqlalchemy.orm.selectinload)
-- [joinedload() Documentation](https://docs.sqlalchemy.org/en/20/orm/loading_relationships.html#sqlalchemy.orm.joinedload)
-- [Full Project Source Code](https://github.com/yourusername/n-plus-one-unit-poc)
+- [Relationships Loading Techniques](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html)
+- [selectinload() Documentation](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html#select-in-loading)
+- [joinedload() Documentation](https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html#joined-eager-loading)
