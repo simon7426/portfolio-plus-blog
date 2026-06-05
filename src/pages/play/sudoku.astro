@@ -1,0 +1,586 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Sudoku">
+  <div class="container">
+    <a href="/play" class="back-link">&larr; Back to games</a>
+    <h1 class="page-title">Sudoku</h1>
+    <p class="page-subtitle">Fill the grid so each row, column, and box contains all numbers.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Grid</label>
+        <div class="toggle-group" id="grid-toggle">
+          <button class="toggle-btn" data-size="6">6×6</button>
+          <button class="toggle-btn toggle-btn--active" data-size="9">9×9</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Difficulty</label>
+        <div class="toggle-group" id="difficulty-toggle">
+          <button class="toggle-btn" data-diff="easy">Easy</button>
+          <button class="toggle-btn toggle-btn--active" data-diff="medium">Medium</button>
+          <button class="toggle-btn" data-diff="hard">Hard</button>
+        </div>
+      </div>
+      <button id="new-game-btn" class="new-game-btn">New Game</button>
+    </div>
+
+    <div class="game-wrapper">
+      <div class="timer">Time: <span id="timer-display">00:00</span></div>
+      <div id="grid" class="grid"></div>
+      <div id="numpad" class="numpad"></div>
+    </div>
+
+    <div id="win-overlay" class="win-overlay">
+      <div class="win-content">
+        <p class="win-title">Solved!</p>
+        <p class="win-time" id="win-time"></p>
+        <button id="play-again-btn" class="win-btn">Play Again</button>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-link {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .control-group label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .toggle-group {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .toggle-btn {
+    padding: 0.4rem 0.75rem;
+    border: none;
+    background: var(--bg);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+  }
+
+  .toggle-btn:not(:last-child) {
+    border-right: 1px solid var(--border);
+  }
+
+  .toggle-btn--active {
+    background: var(--bg-tertiary);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .new-game-btn {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: background 0.15s ease;
+  }
+
+  .new-game-btn:hover {
+    background: var(--bg-secondary);
+  }
+
+  .game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .timer {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .grid {
+    display: inline-grid;
+    border: 2px solid var(--text);
+    border-radius: 2px;
+    background: var(--border-strong);
+    gap: 1px;
+    touch-action: manipulation;
+  }
+
+  :global(.cell) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.1s ease;
+    aspect-ratio: 1;
+  }
+
+  :global(.cell--box-right) {
+    border-right: 2px solid var(--text);
+  }
+
+  :global(.cell--box-bottom) {
+    border-bottom: 2px solid var(--text);
+  }
+
+  :global(.cell--given) {
+    font-weight: 700;
+    color: var(--text);
+    cursor: default;
+  }
+
+  :global(.cell--selected) {
+    background: var(--bg-tertiary);
+  }
+
+  :global(.cell--box) {
+    background: var(--bg-secondary);
+  }
+
+  :global(.cell--related) {
+    background: var(--bg-secondary);
+    opacity: 0.7;
+  }
+
+  :global(.cell--error) {
+    color: #dc2626;
+  }
+
+  [data-theme="dark"] :global(.cell--error) {
+    color: #f87171;
+  }
+
+  .numpad {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    max-width: 320px;
+  }
+
+  .numpad-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background 0.15s ease;
+  }
+
+  .numpad-btn:hover {
+    background: var(--bg-secondary);
+  }
+
+  .numpad-btn:active {
+    background: var(--bg-tertiary);
+  }
+
+  .numpad-btn--erase {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .win-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+  }
+
+  .win-overlay--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .win-content {
+    text-align: center;
+    color: #fff;
+  }
+
+  .win-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .win-time {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .win-btn {
+    padding: 0.6rem 1.5rem;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    background: transparent;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .win-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  @media (max-width: 600px) {
+    .controls {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    :global(.cell) {
+      font-size: 1rem;
+    }
+
+    .numpad-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  const gridEl = document.getElementById('grid');
+  const numpadEl = document.getElementById('numpad');
+  const timerDisplay = document.getElementById('timer-display');
+  const winOverlay = document.getElementById('win-overlay');
+  const winTime = document.getElementById('win-time');
+  const newGameBtn = document.getElementById('new-game-btn');
+  const playAgainBtn = document.getElementById('play-again-btn');
+  const gridToggle = document.getElementById('grid-toggle');
+  const diffToggle = document.getElementById('difficulty-toggle');
+
+  let gridSize = 9;
+  let difficulty = 'medium';
+  let board = [];
+  let solution = [];
+  let given = [];
+  let selectedCell = null;
+  let timerInterval = null;
+  let seconds = 0;
+
+  const DIFFICULTY_REMOVALS = {
+    6: { easy: 14, medium: 20, hard: 26 },
+    9: { easy: 30, medium: 40, hard: 50 },
+  };
+
+  function getBoxSize() {
+    return gridSize === 6 ? { rows: 2, cols: 3 } : { rows: 3, cols: 3 };
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function isValid(board, row, col, num, size) {
+    const boxSize = getBoxSize();
+    for (let i = 0; i < size; i++) {
+      if (board[row][i] === num) return false;
+      if (board[i][col] === num) return false;
+    }
+    const boxRow = Math.floor(row / boxSize.rows) * boxSize.rows;
+    const boxCol = Math.floor(col / boxSize.cols) * boxSize.cols;
+    for (let r = boxRow; r < boxRow + boxSize.rows; r++) {
+      for (let c = boxCol; c < boxCol + boxSize.cols; c++) {
+        if (board[r][c] === num) return false;
+      }
+    }
+    return true;
+  }
+
+  function solve(board, size) {
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        if (board[row][col] === 0) {
+          const nums = shuffle(Array.from({ length: size }, (_, i) => i + 1));
+          for (const num of nums) {
+            if (isValid(board, row, col, num, size)) {
+              board[row][col] = num;
+              if (solve(board, size)) return true;
+              board[row][col] = 0;
+            }
+          }
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  function generatePuzzle() {
+    const size = gridSize;
+    const full = Array.from({ length: size }, () => Array(size).fill(0));
+    solve(full, size);
+    solution = full.map((r) => [...r]);
+
+    const removals = DIFFICULTY_REMOVALS[size][difficulty];
+    const cells = shuffle(Array.from({ length: size * size }, (_, i) => i));
+    const puzzle = full.map((r) => [...r]);
+
+    let removed = 0;
+    for (const idx of cells) {
+      if (removed >= removals) break;
+      const row = Math.floor(idx / size);
+      const col = idx % size;
+      puzzle[row][col] = 0;
+      removed++;
+    }
+
+    board = puzzle;
+    given = puzzle.map((r) => r.map((v) => v !== 0));
+  }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    seconds = 0;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+      seconds++;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    timerDisplay.textContent = m + ':' + s;
+  }
+
+  function renderGrid() {
+    const size = gridSize;
+    const boxSize = getBoxSize();
+    gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    gridEl.innerHTML = '';
+
+    const cellSize = size === 6 ? '3rem' : '2.5rem';
+
+    const selBoxRow = selectedCell ? Math.floor(selectedCell.row / boxSize.rows) * boxSize.rows : -1;
+    const selBoxCol = selectedCell ? Math.floor(selectedCell.col / boxSize.cols) * boxSize.cols : -1;
+
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.style.width = cellSize;
+        cell.style.height = cellSize;
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+
+        const isBoxRight = (col + 1) % boxSize.cols === 0 && col < size - 1;
+        const isBoxBottom = (row + 1) % boxSize.rows === 0 && row < size - 1;
+        if (isBoxRight) cell.classList.add('cell--box-right');
+        if (isBoxBottom) cell.classList.add('cell--box-bottom');
+
+        if (given[row][col]) {
+          cell.classList.add('cell--given');
+          cell.textContent = board[row][col];
+        } else if (board[row][col] !== 0) {
+          cell.textContent = board[row][col];
+        }
+
+        if (selectedCell) {
+          if (selectedCell.row === row && selectedCell.col === col) {
+            cell.classList.add('cell--selected');
+          } else {
+            const cellBoxRow = Math.floor(row / boxSize.rows) * boxSize.rows;
+            const cellBoxCol = Math.floor(col / boxSize.cols) * boxSize.cols;
+            const inSameBox = cellBoxRow === selBoxRow && cellBoxCol === selBoxCol;
+            const inSameRow = row === selectedCell.row;
+            const inSameCol = col === selectedCell.col;
+
+            if (inSameBox) {
+              cell.classList.add('cell--box');
+            } else if (inSameRow || inSameCol) {
+              cell.classList.add('cell--related');
+            }
+          }
+
+          if (!given[row][col] && board[row][col] !== 0 && board[row][col] !== solution[row][col]) {
+            cell.classList.add('cell--error');
+          }
+        }
+
+        cell.addEventListener('click', () => {
+          selectedCell = { row, col };
+          renderGrid();
+        });
+
+        gridEl.appendChild(cell);
+      }
+    }
+  }
+
+  function renderNumpad() {
+    numpadEl.innerHTML = '';
+    for (let i = 1; i <= gridSize; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'numpad-btn';
+      btn.textContent = i;
+      btn.addEventListener('click', () => enterNumber(i));
+      numpadEl.appendChild(btn);
+    }
+    const erase = document.createElement('button');
+    erase.className = 'numpad-btn numpad-btn--erase';
+    erase.textContent = 'Erase';
+    erase.addEventListener('click', () => enterNumber(0));
+    numpadEl.appendChild(erase);
+  }
+
+  function enterNumber(num) {
+    if (!selectedCell) return;
+    const { row, col } = selectedCell;
+    if (given[row][col]) return;
+    board[row][col] = num;
+    renderGrid();
+    checkWin();
+  }
+
+  function checkWin() {
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        if (board[row][col] !== solution[row][col]) return;
+      }
+    }
+    clearInterval(timerInterval);
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    winTime.textContent = 'Time: ' + m + ':' + s;
+    winOverlay.classList.add('win-overlay--visible');
+  }
+
+  function newGame() {
+    winOverlay.classList.remove('win-overlay--visible');
+    selectedCell = null;
+    generatePuzzle();
+    renderGrid();
+    renderNumpad();
+    startTimer();
+  }
+
+  gridToggle.querySelectorAll('.toggle-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      gridToggle.querySelectorAll('.toggle-btn').forEach((b) => b.classList.remove('toggle-btn--active'));
+      btn.classList.add('toggle-btn--active');
+      gridSize = parseInt(btn.dataset.size, 10);
+      newGame();
+    });
+  });
+
+  diffToggle.querySelectorAll('.toggle-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      diffToggle.querySelectorAll('.toggle-btn').forEach((b) => b.classList.remove('toggle-btn--active'));
+      btn.classList.add('toggle-btn--active');
+      difficulty = btn.dataset.diff;
+      newGame();
+    });
+  });
+
+  newGameBtn.addEventListener('click', newGame);
+  playAgainBtn.addEventListener('click', newGame);
+
+  document.addEventListener('keydown', (e) => {
+    if (!selectedCell) return;
+    const { row, col } = selectedCell;
+    if (given[row][col]) return;
+
+    if (e.key >= '1' && e.key <= '9') {
+      const num = parseInt(e.key, 10);
+      if (num <= gridSize) enterNumber(num);
+    } else if (e.key === 'Backspace' || e.key === 'Delete') {
+      enterNumber(0);
+    } else if (e.key === 'ArrowUp' && row > 0) {
+      selectedCell = { row: row - 1, col };
+      renderGrid();
+    } else if (e.key === 'ArrowDown' && row < gridSize - 1) {
+      selectedCell = { row: row + 1, col };
+      renderGrid();
+    } else if (e.key === 'ArrowLeft' && col > 0) {
+      selectedCell = { row, col: col - 1 };
+      renderGrid();
+    } else if (e.key === 'ArrowRight' && col < gridSize - 1) {
+      selectedCell = { row, col: col + 1 };
+      renderGrid();
+    }
+  });
+
+  newGame();
+</script>
