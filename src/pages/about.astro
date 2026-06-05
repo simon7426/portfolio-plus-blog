@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import profile from '../assets/profile.png';
 ---
 
 <BaseLayout title="About" description="Solutions architect and cloud engineer based in Dhaka, Bangladesh.">
@@ -11,11 +12,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
       </div>
 
       <div class="about__header">
-        <div class="about__photo">
-          <div class="about__photo-placeholder">
-            <span>Photo</span>
-          </div>
-        </div>
+        <img src={profile.src} alt="Simon Islam" class="about__photo" />
         <div>
           <h1 class="about__title">About</h1>
           <p class="about__tagline">Solutions architect and cloud engineer.</p>
@@ -117,18 +114,12 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     border-bottom: 1px solid var(--border);
   }
 
-  .about__photo-placeholder {
+  .about__photo {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: var(--bg-secondary);
+    object-fit: cover;
     border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   .about__title {
