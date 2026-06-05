@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../components/ThemeToggle.astro';
 
 const games = [
   {
@@ -17,6 +18,9 @@ const games = [
 
 <BaseLayout title="Play">
   <div class="container">
+    <div class="page-top">
+      <ThemeToggle />
+    </div>
     <h1 class="page-title">Play</h1>
     <p class="page-subtitle">Take a break. These run entirely in your browser.</p>
 
@@ -34,6 +38,12 @@ const games = [
 </BaseLayout>
 
 <style>
+  .page-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+  }
+
   .page-title {
     font-size: 1.75rem;
     font-weight: 700;
