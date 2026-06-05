@@ -1,6 +1,7 @@
 ---
 title: "Welcome"
 description: "A brief introduction to this site and what you can expect to find here."
+summary: "Welcome to my corner of the internet. A place for engineering notes, system design essays, and unpolished thinking about cloud, distributed systems, and building at scale."
 date: 2026-06-01
 tags: ["personal"]
 ---

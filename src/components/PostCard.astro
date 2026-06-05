@@ -15,8 +15,8 @@ const readingTime = getReadingTime(body);
   <a href={`/writing/${slug}`} class="post-card__link">
     <h2 class="post-card__title">{data.title}</h2>
   </a>
-  {data.description && (
-    <p class="post-card__description">{data.description}</p>
+  {(data.summary || data.description) && (
+    <p class="post-card__description">{data.summary || data.description}</p>
   )}
   <div class="post-card__meta">
     <time datetime={data.date.toISOString()}>
