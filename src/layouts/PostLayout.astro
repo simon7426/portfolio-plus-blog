@@ -56,7 +56,7 @@ const { title, description, date, updatedDate, tags, readingTime } = Astro.props
 
 <style>
   .post-header {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--border);
   }
@@ -114,3 +114,112 @@ const { title, description, date, updatedDate, tags, readingTime } = Astro.props
     text-decoration: none;
   }
 </style>
+
+<script>
+  function initCopyButtons() {
+    const blocks = document.querySelectorAll('.post-content pre');
+
+    blocks.forEach((pre) => {
+      if (pre.closest('.code-block')) return;
+      if (pre.getAttribute('data-language') === 'mermaid') return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const button = document.createElement('button');
+      button.className = 'code-block__copy';
+      button.setAttribute('aria-label', 'Copy code');
+      button.innerHTML = `
+        <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+
+      wrapper.appendChild(button);
+
+      button.addEventListener('click', async () => {
+        const code = pre.querySelector('code') || pre;
+        const text = code.textContent;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          button.classList.add('code-block__copy--copied');
+          button.querySelector('.icon-copy').style.display = 'none';
+          button.querySelector('.icon-check').style.display = 'block';
+
+          setTimeout(() => {
+            button.classList.remove('code-block__copy--copied');
+            button.querySelector('.icon-copy').style.display = 'block';
+            button.querySelector('.icon-check').style.display = 'none';
+          }, 2000);
+        } catch {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          button.classList.add('code-block__copy--copied');
+          button.querySelector('.icon-copy').style.display = 'none';
+          button.querySelector('.icon-check').style.display = 'block';
+
+          setTimeout(() => {
+            button.classList.remove('code-block__copy--copied');
+            button.querySelector('.icon-copy').style.display = 'block';
+            button.querySelector('.icon-check').style.display = 'none';
+          }, 2000);
+        }
+      });
+    });
+  }
+
+  async function initMermaid() {
+    const mermaidBlocks = document.querySelectorAll('.post-content pre[data-language="mermaid"]');
+    if (mermaidBlocks.length === 0) return;
+
+    const { default: mermaid } = await import('mermaid');
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+      || (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      securityLevel: 'loose',
+    });
+
+    for (const pre of mermaidBlocks) {
+      const codeEl = pre.querySelector('code');
+      const definition = codeEl?.textContent || pre.textContent;
+      const container = document.createElement('div');
+      container.className = 'mermaid';
+      container.textContent = definition;
+
+      try {
+        const { svg } = await mermaid.render(`mermaid-${crypto.randomUUID()}`, definition);
+        container.innerHTML = svg;
+      } catch {
+        container.textContent = 'Failed to render diagram';
+      }
+
+      pre.replaceWith(container);
+    }
+  }
+
+  document.addEventListener('astro:after-swap', () => {
+    initCopyButtons();
+    initMermaid();
+  });
+
+  initCopyButtons();
+  initMermaid();
+</script>
