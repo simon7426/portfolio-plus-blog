@@ -5,23 +5,54 @@ interface Heading {
   slug: string;
 }
 
+interface TreeNode extends Heading {
+  children: TreeNode[];
+}
+
 interface Props {
   headings: Heading[];
 }
 
+function buildTree(headings: Heading[]): TreeNode[] {
+  const root: TreeNode[] = [];
+  const stack: TreeNode[] = [];
+
+  for (const h of headings) {
+    const node: TreeNode = { ...h, children: [] };
+
+    while (stack.length > 0 && stack[stack.length - 1].depth >= node.depth) {
+      stack.pop();
+    }
+
+    if (stack.length === 0) {
+      root.push(node);
+    } else {
+      stack[stack.length - 1].children.push(node);
+    }
+
+    stack.push(node);
+  }
+
+  return root;
+}
+
+function renderNodes(nodes: TreeNode[]): string {
+  if (nodes.length === 0) return '';
+
+  return '<ul class="toc__list">' + nodes.map((node) => {
+    const childrenHtml = renderNodes(node.children);
+    return `<li class="toc__item"><a href="#${node.slug}">${node.text}</a>${childrenHtml}</li>`;
+  }).join('') + '</ul>';
+}
+
 const { headings } = Astro.props;
+const tree = buildTree(headings);
 ---
 
 {headings.length > 0 && (
   <nav class="toc" aria-label="Table of contents">
     <h2 class="toc__title">On this page</h2>
-    <ul class="toc__list">
-      {headings.map((heading) => (
-        <li class:list={['toc__item', `toc__item--depth-${heading.depth}`]}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
-    </ul>
+    <Fragment set:html={renderNodes(tree)} />
   </nav>
 )}
 
@@ -52,7 +83,7 @@ const { headings } = Astro.props;
   }
 
   .toc__item {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
   }
 
   .toc__item a {
@@ -75,8 +106,13 @@ const { headings } = Astro.props;
     font-weight: 500;
   }
 
-  .toc__item--depth-3 a {
-    padding-left: 0.75rem;
+  .toc__list .toc__list {
+    margin-top: 0.4rem;
+    padding-left: 0.85rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .toc__list .toc__list .toc__item a {
     font-size: 0.72rem;
   }
 
@@ -95,12 +131,12 @@ const { headings } = Astro.props;
     const links = document.querySelectorAll('.toc__item a');
     if (links.length === 0) return;
 
-    const headings: Element[] = [];
+    const headingEls: Element[] = [];
     links.forEach((link) => {
       const id = link.getAttribute('href')?.slice(1);
       if (id) {
         const heading = document.getElementById(id);
-        if (heading) headings.push(heading);
+        if (heading) headingEls.push(heading);
       }
     });
 
@@ -120,6 +156,6 @@ const { headings } = Astro.props;
       { rootMargin: '0px 0px -80% 0px', threshold: 0 }
     );
 
-    headings.forEach((h) => observer.observe(h));
+    headingEls.forEach((h) => observer.observe(h));
   }
 </script>
