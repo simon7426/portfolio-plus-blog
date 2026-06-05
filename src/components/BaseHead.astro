@@ -15,6 +15,9 @@ const {
 
 const siteTitle = 'Simon Islam';
 const fullTitle = title === siteTitle ? title : `${title} — ${siteTitle}`;
+
+const isPost = Astro.url.pathname.startsWith('/writing/');
+const ogType = isPost ? 'article' : 'website';
 ---
 
 <meta charset="utf-8" />
@@ -29,8 +32,9 @@ const fullTitle = title === siteTitle ? title : `${title} — ${siteTitle}`;
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-<meta property="og:type" content="article" />
+<meta property="og:type" content={ogType} />
 <meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content={siteTitle} />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />

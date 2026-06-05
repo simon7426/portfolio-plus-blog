@@ -3,6 +3,11 @@ import BaseLayout from './BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 
+interface PostNav {
+  slug: string;
+  title: string;
+}
+
 interface Props {
   title: string;
   description?: string;
@@ -10,9 +15,11 @@ interface Props {
   updatedDate?: Date;
   tags: string[];
   readingTime: number;
+  prevPost?: PostNav;
+  nextPost?: PostNav;
 }
 
-const { title, description, date, updatedDate, tags, readingTime } = Astro.props;
+const { title, description, date, updatedDate, tags, readingTime, prevPost, nextPost } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
@@ -51,6 +58,37 @@ const { title, description, date, updatedDate, tags, readingTime } = Astro.props
     </div>
 
     <NewsletterSignup />
+
+    {(prevPost || nextPost) && (
+      <nav class="post-nav">
+        {prevPost ? (
+          <a href={`/writing/${prevPost.slug}`} class="post-nav__link post-nav__link--prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <div>
+              <span class="post-nav__label">Previous</span>
+              <span class="post-nav__title">{prevPost.title}</span>
+            </div>
+          </a>
+        ) : (
+          <div />
+        )}
+        {nextPost ? (
+          <a href={`/writing/${nextPost.slug}`} class="post-nav__link post-nav__link--next">
+            <div>
+              <span class="post-nav__label">Next</span>
+              <span class="post-nav__title">{nextPost.title}</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        ) : (
+          <div />
+        )}
+      </nav>
+    )}
   </article>
 </BaseLayout>
 
@@ -112,6 +150,65 @@ const { title, description, date, updatedDate, tags, readingTime } = Astro.props
   .post-header__tags a:hover {
     border-color: var(--border-strong);
     text-decoration: none;
+  }
+
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .post-nav__link:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .post-nav__link--prev {
+    justify-content: flex-start;
+  }
+
+  .post-nav__link--next {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .post-nav__label {
+    display: block;
+    font-size: 0.7rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  .post-nav__title {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 0.2rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 600px) {
+    .post-nav {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 

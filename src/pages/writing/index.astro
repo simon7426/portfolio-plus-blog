@@ -2,11 +2,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
 import PostCard from '../../components/PostCard.astro';
+import Pagination from '../../components/Pagination.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('writing'))
+const POSTS_PER_PAGE = 10;
+
+const allPosts = (await getCollection('writing'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+const posts = allPosts.slice(0, POSTS_PER_PAGE);
+const currentPage = 1;
 ---
 
 <BaseLayout title="Writing" description="All posts and articles.">
@@ -24,6 +31,8 @@ const posts = (await getCollection('writing'))
       ) : (
         <p class="writing__empty">No posts yet.</p>
       )}
+
+      <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl="/writing" />
     </div>
   </div>
 </BaseLayout>

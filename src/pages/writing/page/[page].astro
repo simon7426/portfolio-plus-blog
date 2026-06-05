@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../../components/ThemeToggle.astro';
+import PostCard from '../../../components/PostCard.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const POSTS_PER_PAGE = 10;
+  const posts = (await getCollection('writing'))
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+
+  return Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map((page) => {
+    const start = (page - 1) * POSTS_PER_PAGE;
+    const paginatedPosts = posts.slice(start, start + POSTS_PER_PAGE);
+    return {
+      params: { page: String(page) },
+      props: { posts: paginatedPosts, currentPage: page, totalPages },
+    };
+  });
+}
+
+const { posts, currentPage, totalPages } = Astro.props;
+---
+
+<BaseLayout title={`Writing — Page ${currentPage}`} description="All posts and articles.">
+  <div class="container">
+    <div class="writing">
+      <div class="writing__top">
+        <ThemeToggle />
+      </div>
+      <h1 class="writing__title">Writing</h1>
+
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <PostCard post={post} />
+        ))
+      ) : (
+        <p class="writing__empty">No posts yet.</p>
+      )}
+
+      <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl="/writing" />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .writing {
+    padding: 1rem 0;
+  }
+
+  .writing__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .writing__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin-bottom: 2rem;
+  }
+
+  .writing__empty {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+</style>
