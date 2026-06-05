@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/writing', label: 'Writing' },
+  { href: '/about', label: 'About' },
+];
+---
+
+<BaseLayout title="404" description="This page doesn't exist.">
+  <div class="container">
+    <div class="not-found">
+      <div class="not-found__top">
+        <ThemeToggle />
+      </div>
+      <h1 class="not-found__code">404</h1>
+      <p class="not-found__message">This page doesn't exist.</p>
+      <ul class="not-found__links">
+        {links.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 1rem 0 4rem;
+  }
+
+  .not-found__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .not-found__code {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .not-found__message {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .not-found__links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .not-found__links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .not-found__links a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+</style>

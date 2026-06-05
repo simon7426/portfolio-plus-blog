@@ -20,7 +20,7 @@ npm run check
 
 ## Project Structure
 
-```
+```txt
 src/
 ├── components/          # Reusable UI components
 │   ├── BaseHead.astro       # SEO meta component (unused, kept for reference)
@@ -56,16 +56,16 @@ src/
 1. Create a markdown file in `src/content/writing/`
 2. Use this frontmatter:
 
-```yaml
----
-title: "Your Post Title"
-description: "A brief description (optional)"
-date: 2025-01-15
-updatedDate: 2025-01-20  # optional
-tags: ["architecture", "cloud"]
-draft: false  # set to true to hide
----
-```
+    ```yaml
+    ---
+    title: "Your Post Title"
+    description: "A brief description (optional)"
+    date: 2025-01-15
+    updatedDate: 2025-01-20  # optional
+    tags: ["architecture", "cloud"]
+    draft: false  # set to true to hide
+    ---
+    ```
 
 3. Write your content in markdown below the frontmatter
 4. Commit and push, the site will rebuild automatically
@@ -84,7 +84,7 @@ def hello():
     print("Hello, world!")
 \`\`\`
 
-- Blockquotes with `> `
+- Blockquotes with `>`
 - Lists with `-` or `*`
 
 ## Newsletter
@@ -99,7 +99,7 @@ The newsletter section is a placeholder. To connect a provider:
 
 ### Cloudflare Pages (Recommended)
 
-**Option 1: Direct Git integration**
+#### Option 1: Direct Git integration
 
 1. Push this repo to GitHub
 2. Go to Cloudflare Dashboard → Pages → Create a project
@@ -110,7 +110,7 @@ The newsletter section is a placeholder. To connect a provider:
    - Build output directory: `dist`
 5. Add your custom domain.
 
-**Option 2: Wrangler CLI**
+#### Option 2: Wrangler CLI
 
 ```bash
 # Install Wrangler
