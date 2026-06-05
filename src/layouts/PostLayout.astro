@@ -1,7 +1,14 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
-import NewsletterSignup from '../components/NewsletterSignup.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import ShareLinks from '../components/ShareLinks.astro';
+
+interface Heading {
+  depth: number;
+  text: string;
+  slug: string;
+}
 
 interface PostNav {
   slug: string;
@@ -17,82 +24,104 @@ interface Props {
   readingTime: number;
   prevPost?: PostNav;
   nextPost?: PostNav;
+  headings?: Heading[];
+  slug?: string;
 }
 
-const { title, description, date, updatedDate, tags, readingTime, prevPost, nextPost } = Astro.props;
+const { title, description, date, updatedDate, tags, readingTime, prevPost, nextPost, headings = [], slug } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
-  <article class="container container--wide">
-    <header class="post-header">
-      <div class="post-header__top">
-        <ThemeToggle />
-      </div>
-      <h1 class="post-header__title">{title}</h1>
-      <div class="post-header__meta">
-        <time datetime={date.toISOString()}>
-          {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-        </time>
-        {updatedDate && (
-          <>
-            <span class="separator">&middot;</span>
-            <span>Updated <time datetime={updatedDate.toISOString()}>{updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
-          </>
+<BaseLayout title={title} description={description} slug={slug}>
+  <div class="progress-bar" id="progress-bar"></div>
+  <div class="post-layout">
+    <article class="post-content-wrapper" id="post-article">
+      <header class="post-header">
+        <div class="post-header__top">
+          <ThemeToggle />
+        </div>
+        <h1 class="post-header__title">{title}</h1>
+        <div class="post-header__meta">
+          <time datetime={date.toISOString()}>
+            {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+          {updatedDate && (
+            <>
+              <span class="separator">&middot;</span>
+              <span>Updated <time datetime={updatedDate.toISOString()}>{updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
+            </>
+          )}
+          <span class="separator">&middot;</span>
+          <span>{readingTime} min read</span>
+        </div>
+        {tags.length > 0 && (
+          <ul class="post-header__tags">
+            {tags.map((tag) => (
+              <li>
+                <a href={`/tags/${tag}`}>{tag}</a>
+              </li>
+            ))}
+          </ul>
         )}
-        <span class="separator">&middot;</span>
-        <span>{readingTime} min read</span>
+      </header>
+
+      <div class="post-content">
+        <slot />
       </div>
-      {tags.length > 0 && (
-        <ul class="post-header__tags">
-          {tags.map((tag) => (
-            <li>
-              <a href={`/tags/${tag}`}>{tag}</a>
-            </li>
-          ))}
-        </ul>
+
+      <ShareLinks title={title} url={Astro.url.href} />
+
+      {(prevPost || nextPost) && (
+        <nav class="post-nav">
+          {prevPost ? (
+            <a href={`/writing/${prevPost.slug}`} class="post-nav__link post-nav__link--prev">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <div>
+                <span class="post-nav__label">Previous</span>
+                <span class="post-nav__title">{prevPost.title}</span>
+              </div>
+            </a>
+          ) : (
+            <div />
+          )}
+          {nextPost ? (
+            <a href={`/writing/${nextPost.slug}`} class="post-nav__link post-nav__link--next">
+              <div>
+                <span class="post-nav__label">Next</span>
+                <span class="post-nav__title">{nextPost.title}</span>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </a>
+          ) : (
+            <div />
+          )}
+        </nav>
       )}
-    </header>
+    </article>
 
-    <div class="post-content">
-      <slot />
-    </div>
-
-    <NewsletterSignup />
-
-    {(prevPost || nextPost) && (
-      <nav class="post-nav">
-        {prevPost ? (
-          <a href={`/writing/${prevPost.slug}`} class="post-nav__link post-nav__link--prev">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            <div>
-              <span class="post-nav__label">Previous</span>
-              <span class="post-nav__title">{prevPost.title}</span>
-            </div>
-          </a>
-        ) : (
-          <div />
-        )}
-        {nextPost ? (
-          <a href={`/writing/${nextPost.slug}`} class="post-nav__link post-nav__link--next">
-            <div>
-              <span class="post-nav__label">Next</span>
-              <span class="post-nav__title">{nextPost.title}</span>
-            </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </a>
-        ) : (
-          <div />
-        )}
-      </nav>
-    )}
-  </article>
+    <aside class="post-sidebar">
+      <TableOfContents headings={headings} />
+    </aside>
+  </div>
 </BaseLayout>
 
 <style>
+  .post-layout {
+    max-width: 110ch;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 3rem;
+  }
+
+  .post-content-wrapper {
+    min-width: 0;
+  }
+
   .post-header {
     margin-bottom: 1rem;
     padding-bottom: 2rem;
@@ -205,15 +234,56 @@ const { title, description, date, updatedDate, tags, readingTime, prevPost, next
     line-height: 1.4;
   }
 
+  @media (max-width: 900px) {
+    .post-layout {
+      grid-template-columns: 1fr;
+      max-width: 65ch;
+    }
+
+    .post-sidebar {
+      display: none;
+    }
+  }
+
   @media (max-width: 600px) {
     .post-nav {
       grid-template-columns: 1fr;
     }
   }
+
+  .code-block__lang {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.75rem;
+    font-size: 0.65rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+  }
+
+  .code-block:has(.code-block__lang) pre {
+    padding-top: 2rem;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--text);
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
 </style>
 
 <script>
-  function initCopyButtons() {
+  (function() {
+    if (typeof document === 'undefined') return;
+
+    function initCopyButtons() {
     const blocks = document.querySelectorAll('.post-content pre');
 
     blocks.forEach((pre) => {
@@ -222,8 +292,16 @@ const { title, description, date, updatedDate, tags, readingTime, prevPost, next
 
       const wrapper = document.createElement('div');
       wrapper.className = 'code-block';
-      pre.parentNode.insertBefore(wrapper, pre);
+      pre.parentNode!.insertBefore(wrapper, pre);
       wrapper.appendChild(pre);
+
+      const lang = pre.getAttribute('data-language') || '';
+      if (lang && lang !== 'text' && lang !== 'plaintext') {
+        const label = document.createElement('span');
+        label.className = 'code-block__lang';
+        label.textContent = lang.charAt(0).toUpperCase() + lang.slice(1);
+        wrapper.appendChild(label);
+      }
 
       const button = document.createElement('button');
       button.className = 'code-block__copy';
@@ -247,13 +325,13 @@ const { title, description, date, updatedDate, tags, readingTime, prevPost, next
         try {
           await navigator.clipboard.writeText(text);
           button.classList.add('code-block__copy--copied');
-          button.querySelector('.icon-copy').style.display = 'none';
-          button.querySelector('.icon-check').style.display = 'block';
+          (button.querySelector('.icon-copy') as HTMLElement).style.display = 'none';
+          (button.querySelector('.icon-check') as HTMLElement).style.display = 'block';
 
           setTimeout(() => {
             button.classList.remove('code-block__copy--copied');
-            button.querySelector('.icon-copy').style.display = 'block';
-            button.querySelector('.icon-check').style.display = 'none';
+            (button.querySelector('.icon-copy') as HTMLElement).style.display = 'block';
+            (button.querySelector('.icon-check') as HTMLElement).style.display = 'none';
           }, 2000);
         } catch {
           const textarea = document.createElement('textarea');
@@ -266,13 +344,13 @@ const { title, description, date, updatedDate, tags, readingTime, prevPost, next
           document.body.removeChild(textarea);
 
           button.classList.add('code-block__copy--copied');
-          button.querySelector('.icon-copy').style.display = 'none';
-          button.querySelector('.icon-check').style.display = 'block';
+          (button.querySelector('.icon-copy') as HTMLElement).style.display = 'none';
+          (button.querySelector('.icon-check') as HTMLElement).style.display = 'block';
 
           setTimeout(() => {
             button.classList.remove('code-block__copy--copied');
-            button.querySelector('.icon-copy').style.display = 'block';
-            button.querySelector('.icon-check').style.display = 'none';
+            (button.querySelector('.icon-copy') as HTMLElement).style.display = 'block';
+            (button.querySelector('.icon-check') as HTMLElement).style.display = 'none';
           }, 2000);
         }
       });
@@ -312,11 +390,34 @@ const { title, description, date, updatedDate, tags, readingTime, prevPost, next
     }
   }
 
+  function initProgressBar() {
+    const bar = document.getElementById('progress-bar');
+    const article = document.getElementById('post-article');
+    if (!bar || !article) return;
+
+    function update() {
+      const rect = article.getBoundingClientRect();
+      const articleTop = rect.top + window.scrollY;
+      const articleHeight = article.offsetHeight;
+      const viewportHeight = window.innerHeight;
+      const scrolled = window.scrollY - articleTop;
+      const total = articleHeight - viewportHeight;
+      const progress = Math.min(Math.max(scrolled / total, 0), 1);
+      bar.style.width = `${progress * 100}%`;
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
   document.addEventListener('astro:after-swap', () => {
     initCopyButtons();
     initMermaid();
+    initProgressBar();
   });
 
   initCopyButtons();
   initMermaid();
+  initProgressBar();
+  })();
 </script>

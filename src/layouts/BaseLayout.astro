@@ -9,15 +9,16 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  slug?: string;
 }
 
-const { title, description, canonical, ogImage } = Astro.props;
+const { title, description, canonical, ogImage, slug } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} canonical={canonical} ogImage={ogImage} />
+    <BaseHead title={title} description={description} canonical={canonical} ogImage={ogImage} slug={slug} />
     <script is:inline define:vars={{}}>
       (function() {
         var stored = localStorage.getItem('theme');
