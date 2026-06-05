@@ -26,17 +26,17 @@
 
 <style>
   .newsletter {
-    padding: 2rem;
+    padding: 1.75rem;
     border: 1px solid var(--border);
     border-radius: 4px;
-    margin: 2rem 0;
+    margin: 2.5rem 0 0;
     background: var(--bg-secondary);
   }
 
   .newsletter__title {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
@@ -44,7 +44,7 @@
     font-size: 0.85rem;
     color: var(--text-secondary);
     margin-bottom: 1rem;
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
   .newsletter__form {
@@ -55,7 +55,7 @@
 
   .newsletter__input {
     flex: 1;
-    padding: 0.6rem 0.75rem;
+    padding: 0.55rem 0.75rem;
     border: 1px solid var(--border);
     border-radius: 3px;
     background: var(--bg);
@@ -64,8 +64,13 @@
     font-family: inherit;
   }
 
+  .newsletter__input:focus {
+    outline: none;
+    border-color: var(--border-strong);
+  }
+
   .newsletter__button {
-    padding: 0.6rem 1rem;
+    padding: 0.55rem 1rem;
     border: 1px solid var(--border-strong);
     border-radius: 3px;
     background: var(--text);
@@ -74,11 +79,18 @@
     cursor: not-allowed;
     opacity: 0.5;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: opacity 0.15s ease;
   }
 
   .newsletter__note {
     font-size: 0.75rem;
     color: var(--text-muted);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @media (max-width: 600px) {
+    .newsletter__form {
+      flex-direction: column;
+    }
   }
 </style>
