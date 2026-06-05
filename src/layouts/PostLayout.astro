@@ -56,7 +56,7 @@ const { title, description, date, updatedDate, tags, readingTime } = Astro.props
 
 <style>
   .post-header {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--border);
   }
@@ -114,3 +114,74 @@ const { title, description, date, updatedDate, tags, readingTime } = Astro.props
     text-decoration: none;
   }
 </style>
+
+<script>
+  function initCopyButtons() {
+    const blocks = document.querySelectorAll('.post-content pre');
+
+    blocks.forEach((pre) => {
+      if (pre.closest('.code-block')) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      const button = document.createElement('button');
+      button.className = 'code-block__copy';
+      button.setAttribute('aria-label', 'Copy code');
+      button.innerHTML = `
+        <svg class="icon-copy" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+
+      wrapper.appendChild(button);
+
+      button.addEventListener('click', async () => {
+        const code = pre.querySelector('code') || pre;
+        const text = code.textContent;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          button.classList.add('code-block__copy--copied');
+          button.querySelector('.icon-copy').style.display = 'none';
+          button.querySelector('.icon-check').style.display = 'block';
+
+          setTimeout(() => {
+            button.classList.remove('code-block__copy--copied');
+            button.querySelector('.icon-copy').style.display = 'block';
+            button.querySelector('.icon-check').style.display = 'none';
+          }, 2000);
+        } catch {
+          // Clipboard API not available, fallback
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          button.classList.add('code-block__copy--copied');
+          button.querySelector('.icon-copy').style.display = 'none';
+          button.querySelector('.icon-check').style.display = 'block';
+
+          setTimeout(() => {
+            button.classList.remove('code-block__copy--copied');
+            button.querySelector('.icon-copy').style.display = 'block';
+            button.querySelector('.icon-check').style.display = 'none';
+          }, 2000);
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:after-swap', initCopyButtons);
+  initCopyButtons();
+</script>
