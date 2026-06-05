@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<BaseLayout title="About" description="Solutions architect and cloud engineer based in Dhaka, Bangladesh.">
+  <div class="container container--wide">
+    <div class="about">
+      <div class="about__top">
+        <ThemeToggle />
+      </div>
+
+      <div class="about__header">
+        <div class="about__photo">
+          <div class="about__photo-placeholder">
+            <span>Photo</span>
+          </div>
+        </div>
+        <div>
+          <h1 class="about__title">About</h1>
+          <p class="about__tagline">Solutions architect and cloud engineer.</p>
+        </div>
+      </div>
+
+      <div class="about__content">
+        <p>
+          I'm a solutions architect and software engineer based in Dhaka, Bangladesh, with over
+          four years of experience designing and building cloud-native platforms, API interfaces,
+          and distributed systems.
+        </p>
+
+        <p>
+          I currently work as a Solutions Architect at NexGen Cloud, where I design scalable
+          cloud-native solutions for a GPU-as-a-Service platform serving thousands of customers
+          across multiple regions. Before that, I helped build the platform from its early stages
+          as a developer, taking it from MVP to production.
+        </p>
+
+        <p>
+          My work sits at the intersection of architecture and engineering. I care about how
+          systems are designed, how they scale, and how they hold up under real-world conditions.
+          I've worked extensively with Python, microservices architecture, container orchestration,
+          and cloud infrastructure optimization.
+        </p>
+
+        <h2>What I Do</h2>
+
+        <p>
+          Most of my time is spent on:
+        </p>
+
+        <ul>
+          <li>Designing system architectures for cloud-native platforms</li>
+          <li>Building and scaling API interfaces and distributed systems</li>
+          <li>Optimizing infrastructure for performance and cost</li>
+          <li>Working with GPU cloud infrastructure and multi-region deployments</li>
+          <li>Architecture reviews and technical strategy</li>
+        </ul>
+
+        <h2>Background</h2>
+
+        <p>
+          I graduated with a BSc in Computer Science &amp; Engineering from Chittagong University
+          of Engineering &amp; Technology (CUET) in 2021. During university, I was actively
+          involved in the CUET Computer Club, serving as Vice President and as a competitive
+          programming trainer.
+        </p>
+
+        <p>
+          Before moving into architecture, I spent time as a software engineer building
+          production systems including load balancer automation, object storage integrations, automated
+          billing systems, and high-availability deployments using Kubernetes.
+        </p>
+
+        <h2>Why This Site</h2>
+
+        <p>
+          This site is where I collect my thoughts on engineering, architecture, and the things
+          I'm learning. It's not a polished publication. It's a working document of my thinking.
+          Some posts will be rough notes. Others will be more considered essays. Both are valuable
+          to me.
+        </p>
+
+        <p>
+          Writing forces clarity. You don't know what you think until you try to explain it.
+        </p>
+
+        <h2>Get in Touch</h2>
+
+        <p>
+          <a href="mailto:mail@simonislam.com">mail@simonislam.com</a><br />
+          <a href="https://github.com/simon7426">GitHub</a><br />
+          <a href="https://www.linkedin.com/in/simon-islam-rian/">LinkedIn</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about {
+    padding: 1rem 0;
+  }
+
+  .about__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .about__header {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about__photo-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .about__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .about__tagline {
+    font-size: 1rem;
+    color: var(--text-secondary);
+  }
+
+  .about__content {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .about__content p {
+    margin-bottom: 1.25rem;
+  }
+
+  .about__content h2 {
+    font-size: 1.25rem;
+    margin: 2.5rem 0 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .about__content ul {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .about__content li {
+    margin-bottom: 0.4rem;
+  }
+
+  .about__content a {
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 2px;
+  }
+
+  .about__content a:hover {
+    text-decoration-color: var(--text);
+  }
+
+  @media (max-width: 600px) {
+    .about__header {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  }
+</style>

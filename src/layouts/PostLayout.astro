@@ -1,0 +1,175 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  date: Date;
+  updatedDate?: Date;
+  tags: string[];
+  readingTime: number;
+}
+
+const { title, description, date, updatedDate, tags, readingTime } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="container container--wide">
+    <header class="post-header">
+      <div class="post-header__top">
+        <ThemeToggle />
+      </div>
+      <h1 class="post-header__title">{title}</h1>
+      <div class="post-header__meta">
+        <time datetime={date.toISOString()}>
+          {date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+        {updatedDate && (
+          <>
+            <span class="separator">&middot;</span>
+            <span>Updated <time datetime={updatedDate.toISOString()}>{updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
+          </>
+        )}
+        <span class="separator">&middot;</span>
+        <span>{readingTime} min read</span>
+      </div>
+      {tags.length > 0 && (
+        <ul class="post-header__tags">
+          {tags.map((tag) => (
+            <li>
+              <a href={`/tags/${tag}`}>{tag}</a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <div class="post-content">
+      <slot />
+    </div>
+
+    <NewsletterSignup />
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-header__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-header__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .post-header__meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .separator {
+    color: var(--border-strong);
+  }
+
+  .post-header__tags {
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .post-header__tags a {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: lowercase;
+  }
+
+  .post-header__tags a:hover {
+    border-color: var(--border-strong);
+    text-decoration: none;
+  }
+
+  .post-content {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .post-content h1 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .post-content h2 {
+    font-size: 1.25rem;
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .post-content h3 {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .post-content p {
+    margin-bottom: 1.25rem;
+  }
+
+  .post-content ul,
+  .post-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .post-content li {
+    margin-bottom: 0.4rem;
+  }
+
+  .post-content blockquote {
+    border-left: 2px solid var(--border-strong);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  .post-content a {
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 2px;
+  }
+
+  .post-content a:hover {
+    text-decoration-color: var(--text);
+  }
+</style>

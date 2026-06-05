@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../components/ThemeToggle.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing');
+  const tags = new Set<string>();
+
+  posts
+    .filter((post) => !post.data.draft)
+    .forEach((post) => {
+      post.data.tags.forEach((tag) => tags.add(tag));
+    });
+
+  return Array.from(tags).map((tag) => {
+    const taggedPosts = posts
+      .filter((post) => !post.data.draft && post.data.tags.includes(tag))
+      .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+    return {
+      params: { tag },
+      props: { tag, posts: taggedPosts },
+    };
+  });
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`Tag: ${tag}`} description={`Posts tagged with "${tag}".`}>
+  <div class="container">
+    <div class="tag">
+      <div class="tag__top">
+        <ThemeToggle />
+      </div>
+      <h1 class="tag__title">Tag: {tag}</h1>
+      <p class="tag__count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <PostCard post={post} />
+        ))
+      ) : (
+        <p class="tag__empty">No posts with this tag.</p>
+      )}
+
+      <a href="/writing" class="tag__back">&larr; Back to all writing</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag {
+    padding: 1rem 0;
+  }
+
+  .tag__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .tag__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag__count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin-bottom: 2rem;
+  }
+
+  .tag__empty {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .tag__back {
+    display: inline-block;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .tag__back:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+</style>

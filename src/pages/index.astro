@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import PostCard from '../components/PostCard.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 10);
+---
+
+<BaseLayout title="Simon Islam" description="Solutions architect and cloud engineer writing about systems, infrastructure, and engineering.">
+  <div class="container">
+    <div class="hero">
+      <div class="hero__top">
+        <ThemeToggle />
+      </div>
+      <h1 class="hero__title">Simon Islam</h1>
+      <p class="hero__subtitle">
+        Solutions architect and cloud engineer. I build scalable platforms and write about
+        systems, infrastructure, and the things I'm learning along the way.
+      </p>
+      <nav class="hero__links">
+        <a href="/about">About</a>
+        <a href="/writing">Writing</a>
+        <a href="/resume">Resume</a>
+      </nav>
+    </div>
+
+    {posts.length > 0 && (
+      <section class="recent">
+        <h2 class="recent__heading">Recent Writing</h2>
+        {posts.map((post) => (
+          <PostCard post={post} />
+        ))}
+        <a href="/writing" class="recent__more">View all posts &rarr;</a>
+      </section>
+    )}
+
+    <NewsletterSignup />
+  </div>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 1rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  .hero__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .hero__title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 55ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero__links {
+    display: flex;
+    gap: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .hero__links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .hero__links a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+
+  .recent__heading {
+    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .recent__more {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .recent__more:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+</style>

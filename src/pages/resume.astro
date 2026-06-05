@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<BaseLayout title="Resume" description="Professional experience and technical skills.">
+  <div class="container container--wide">
+    <div class="resume">
+      <div class="resume__top">
+        <ThemeToggle />
+      </div>
+
+      <h1 class="resume__title">Resume</h1>
+
+      <section class="resume__section">
+        <h2 class="resume__section-title">Experience</h2>
+
+        <div class="resume__entry">
+          <div class="resume__entry-header">
+            <h3 class="resume__entry-title">Solutions Architect</h3>
+            <span class="resume__entry-company">NexGen Cloud</span>
+          </div>
+          <div class="resume__entry-meta">
+            <time>Oct 2024</time> — Present <span class="separator">&middot;</span> London, UK (Remote)
+          </div>
+          <ul class="resume__entry-details">
+            <li>Design and architect scalable cloud-native solutions for GPU-as-a-Service platform serving 5000+ customers across multiple regions</li>
+            <li>Drive technical strategy and architecture decisions to support rapid platform growth and expanding customer base</li>
+            <li>Optimize cloud infrastructure consumption patterns, reducing operational costs while maintaining performance SLAs</li>
+            <li>Lead architecture reviews and collaborate with engineering teams to ensure system reliability, scalability, and security</li>
+            <li>Develop API interfaces and distributed systems components enabling seamless multi-region infrastructure management</li>
+          </ul>
+        </div>
+
+        <div class="resume__entry">
+          <div class="resume__entry-header">
+            <h3 class="resume__entry-title">Junior Developer</h3>
+            <span class="resume__entry-company">NexGen Cloud</span>
+          </div>
+          <div class="resume__entry-meta">
+            <time>Jan 2023</time> — Oct 2024 <span class="separator">&middot;</span> London, UK (Remote)
+          </div>
+          <ul class="resume__entry-details">
+            <li>Built and scaled Infrahub, NexGen Cloud's GPU-as-a-Service API platform, from MVP to production serving 5000+ customers</li>
+            <li>Developed unified API interface consolidating infrastructure across multiple regions</li>
+            <li>Engineered Real-time Stock Reporting system, improving customer data accessibility and platform transparency</li>
+            <li>Designed minute-level dynamic pricing/discount system, optimizing billing accuracy and customer satisfaction</li>
+            <li>Tech Stack: Python, Flask, Docker, RabbitMQ, Git</li>
+          </ul>
+        </div>
+
+        <div class="resume__entry">
+          <div class="resume__entry-header">
+            <h3 class="resume__entry-title">Software Engineer</h3>
+            <span class="resume__entry-company">Intercloud Limited</span>
+          </div>
+          <div class="resume__entry-meta">
+            <time>Jul 2021</time> — Dec 2022 <span class="separator">&middot;</span> Dhaka, Bangladesh
+          </div>
+          <ul class="resume__entry-details">
+            <li>Developed Load Balancer as a Service using Flask, Celery, and Socket.io, automating load balancer provisioning</li>
+            <li>Integrated S3 object storage into the cloud platform, enabling seamless in-platform navigation and management</li>
+            <li>Built automated invoice and payment generation system using Flask and Celery</li>
+            <li>Implemented Multi-Factor Authentication (MFA) across the platform</li>
+            <li>Deployed high-availability production environments using Kubernetes</li>
+            <li>Tech Stack: Python, Flask, Celery, Docker, Kubernetes, PostgreSQL, Git</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="resume__section">
+        <h2 class="resume__section-title">Technical Skills</h2>
+        <dl class="resume__skills">
+          <dt>Languages</dt>
+          <dd>Python, JavaScript, C++, C</dd>
+          <dt>Frameworks</dt>
+          <dd>Flask, FastAPI, Django, Vue.js</dd>
+          <dt>Architecture &amp; Design</dt>
+          <dd>Microservices, API Design, Distributed Systems, System Architecture, Cloud-Native Design, Solution Architecture</dd>
+          <dt>Cloud &amp; Infrastructure</dt>
+          <dd>Docker, Kubernetes, OpenStack, Ceph, GPU Cloud Infrastructure, Multi-Region Deployment</dd>
+          <dt>Data &amp; Messaging</dt>
+          <dd>PostgreSQL, RabbitMQ, InfluxDB, Celery, Socket.io</dd>
+          <dt>Tools &amp; Practices</dt>
+          <dd>Git, CI/CD, Agile/Scrum, Infrastructure as Code, Monitoring &amp; Observability, Cost Optimization</dd>
+        </dl>
+      </section>
+
+      <section class="resume__section">
+        <h2 class="resume__section-title">Education</h2>
+        <div class="resume__entry">
+          <div class="resume__entry-header">
+            <h3 class="resume__entry-title">BSc in Computer Science &amp; Engineering</h3>
+            <span class="resume__entry-company">CUET</span>
+          </div>
+          <div class="resume__entry-meta">
+            2021 <span class="separator">&middot;</span> Chattogram, Bangladesh
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .resume {
+    padding: 1rem 0;
+  }
+
+  .resume__top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
+  }
+
+  .resume__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+  }
+
+  .resume__section {
+    margin-bottom: 3rem;
+  }
+
+  .resume__section-title {
+    font-size: 0.8rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .resume__entry {
+    margin-bottom: 2rem;
+  }
+
+  .resume__entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .resume__entry-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .resume__entry-company {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .resume__entry-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin-bottom: 0.75rem;
+  }
+
+  .separator {
+    color: var(--border-strong);
+  }
+
+  .resume__entry-details {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+  }
+
+  .resume__entry-details li {
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .resume__entry-detail {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .resume__skills {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .resume__skills dt {
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .resume__skills dd {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-left: 0;
+    line-height: 1.6;
+  }
+</style>
